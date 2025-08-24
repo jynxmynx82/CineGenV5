@@ -1,56 +1,207 @@
-<img src="https://avatars2.githubusercontent.com/u/2810941?v=3&s=96" alt="Google Cloud Platform logo" title="Google Cloud Platform" align="right" height="96" width="96"/>
+# CineGenV5 - Cinematic Character Generation Tool
 
-# Simple application to interact with Gemini API
+A CLI application for generating consistent cinematic characters and scenes using Google's Imagen 4.0 AI model. This tool helps filmmakers and creative professionals maintain visual consistency across multiple generated images through proper seeding and prompting techniques.
 
-"Python: Gemini API" is a simple sample application that shows you how to interact with Google's Gemini APIs .
+## Features
 
-## Table of Contents
+- **Character Creation**: Define detailed character descriptions and generate consistent character portraits
+- **Reference Image Analysis**: Upload reference images and let AI extract character descriptions automatically
+- **Scene Generation**: Create scenes with previously defined characters while maintaining visual consistency
+- **Seed-Based Consistency**: Uses Imagen 4.0's seeding feature to ensure character consistency across multiple generations
+- **Input Validation**: Comprehensive validation for all user inputs with helpful error messages
+- **Organized File Management**: Session-based directory structure with separate folders for characters and scenes
+- **Fixed Cinematic Aspect Ratio**: All images generated in 16:9 widescreen format for cinematic feel
+- **Session-Based Storage**: Characters are stored in memory during the session for easy reuse
 
-* [Directory contents](#directory-contents)
-* [Setting up the API Key](#setting-up-the-api-key)
-* [Getting started](#getting-started-with-vs-code)
-* [Sign up for user research](#sign-up-for-user-research)
+## Prerequisites
 
-## Directory contents
-* `launch.json` - config file for later when you deploy your application to Google Cloud 
-* `main.py` - the Python sample application that asks Gemini API to generate content based on a prompt
-* `requirements.txt` - includes the google generative ai dependency
+- Python 3.7 or higher
+- Google Cloud account with Vertex AI enabled
+- Google Cloud CLI installed and authenticated
+- Imagen 4.0 API access
 
-## Setting up the API Key
-Before you can use the Gemini API, you must first obtain an API key. If you don't already have one, create a key with one click in Google AI Studio.
-[Get API](https://makersuite.google.com/app/apikey)
+## Installation
 
-## Getting started with Cloud Code
+1. Clone this repository:
+```bash
+git clone <repository-url>
+cd CineGenV5
+```
 
-### Run the application locally 
+2. Install required dependencies:
+```bash
+pip install -r requirements.txt
+```
 
-1. Make sure you have generated the API key as shown above. Please make sure to use and store this key securely. 
+3. Set up Google Cloud authentication:
+```bash
+gcloud auth application-default login
+```
 
-1. Install the package using 
-```pip install -r requirements.txt```
+4. Set required environment variables:
+```bash
+export GOOGLE_CLOUD_PROJECT="your-project-id"
+export GOOGLE_CLOUD_LOCATION="us-central1"  # or your preferred region
+export GOOGLE_API_KEY="your-google-api-key"  # optional, for reference image analysis
+```
 
-1. Run this using 
-```python main.py```
+## Usage
 
-### Documentation 
-1. You can see detailed API Reference for the Gemini APIs [here](https://googledevai.google.com/api) 
+Run the application:
+```bash
+python main.py
+```
 
-1. You can see more samples and things to do [here](https://googledevai.google.com/tutorials/python_quickstart) 
+### Workflow
 
-### Other things to try 
-    
-1. If you're new to Google Cloud, [create an account](https://console.cloud.google.com/freetrial/signup/tos) to evaluate how our products perform in real-world scenarios. New customers also get $300 in free credits to run, test, and deploy workloads.
+The application follows a two-stage process:
 
-1. Install the Cloud Code [VS Code plugin](https://cloud.google.com/code/docs/vscode/install#installing) or [Jetbrains Extension](https://cloud.google.com/code/docs/intellij/install) if you haven't already.
+#### Stage 1: Character Definition & Seeding
+**Option A: Manual Creation**
+1. Select "Create New Character" from the main menu
+2. Enter a name for your character
+3. Provide a detailed description (physical appearance, clothing, etc.)
+4. Optionally add a negative prompt (what to avoid)
+5. The system generates a character portrait and stores the consistency seed
 
-1. Access Cloud Code [documentation](https://cloud.google.com/code/docs/) to learn how you can deploy your app to Google Cloud 
+**Option B: Reference Image Analysis**
+1. Select "Create Character from Reference Image" from the main menu
+2. Upload a reference image (JPG, PNG, WebP, max 10MB)
+3. AI analyzes the image and extracts character descriptions
+4. Review and edit the AI-generated description
+5. Enter a name and optionally add a negative prompt
+6. The system generates a character portrait and stores the consistency seed
 
-### Sign up for user research
+#### Stage 2: Scene Generation
+1. Select "Generate Scene with Character" from the main menu
+2. Choose from your created characters
+3. Describe the scene (action, environment, etc.)
+4. The system generates the scene using the character's stored seed for consistency
 
-We want to hear your feedback!
+### Menu Options
 
-The Cloud Code team is inviting our user community to sign-up to participate in Google User Experience Research. 
+- **1. Create New Character**: Define and generate a new character manually
+- **2. Create Character from Reference Image**: Upload an image and let AI extract character descriptions
+- **3. Generate Scene with Character**: Create scenes with existing characters
+- **4. List Created Characters**: View all characters in the current session
+- **5. Exit**: Close the application
 
-If you’re invited to join a study, you may try out a new product or tell us what you think about the products you use every day. At this time, Google is only sending invitations for upcoming remote studies. Once a study is complete, you’ll receive a token of thanks for your participation such as a gift card or some Google swag. 
+## Configuration
 
-[Sign up using this link](https://google.qualtrics.com/jfe/form/SV_4Me7SiMewdvVYhL?reserved=1&utm_source=In-product&Q_Language=en&utm_medium=own_prd&utm_campaign=Q1&productTag=clou&campaignDate=January2021&referral_code=UXbT481079) and answer a few questions about yourself, as this will help our research team match you to studies that are a great fit.
+The application uses the following fixed parameters:
+- **Model**: `imagen-4.0-ultra-generate-001`
+- **Aspect Ratio**: 16:9 (widescreen)
+- **Sample Count**: 1 image per generation
+
+## File Structure
+
+```
+CineGenV5/
+├── main.py                 # Main application code
+├── requirements.txt        # Python dependencies
+├── README.md              # This file
+├── CineGen-V5-Prompt.md   # Original project specification
+└── Functional_Spec.md     # Functional specification (to be completed)
+```
+
+## Generated Files
+
+Images are organized in session-based directories with the following structure:
+```
+cinegen_session_YYYYMMDD_HHMMSS/
+├── characters/
+│   ├── {character_name}_portrait.png
+│   └── ...
+└── scenes/
+    ├── {character_name}_scene_{random_number}.png
+    └── ...
+```
+
+**File Organization:**
+- **Session directories**: Each run creates a timestamped session folder
+- **Character portraits**: Stored in `characters/` subdirectory
+- **Scene images**: Stored in `scenes/` subdirectory
+- **Easy cleanup**: Delete entire session folders to remove all related files
+
+## Technical Details
+
+- Uses Google Cloud Vertex AI for image generation
+- Implements seed-based consistency for character continuity
+- Session-based character storage (not persistent across sessions)
+- CLI interface for easy automation and scripting
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Authentication Error**: Ensure you're logged in with `gcloud auth application-default login`
+2. **Project Not Found**: Verify your `GOOGLE_CLOUD_PROJECT` environment variable is correct
+3. **API Access Denied**: Ensure your project has Imagen 4.0 API enabled
+4. **Region Issues**: Check that your `GOOGLE_CLOUD_LOCATION` is supported for Imagen 4.0
+
+### Error Messages
+
+- `ERROR: Please set the GOOGLE_CLOUD_PROJECT and GOOGLE_CLOUD_LOCATION environment variables.`
+  - Solution: Set the required environment variables before running the script
+
+- `!! Failed to initialize Vertex AI`
+  - Solution: Check your authentication and project configuration
+
+## Input Validation
+
+The application includes comprehensive input validation to ensure reliable operation:
+
+### Character Names
+- **Length**: 1-50 characters
+- **Characters**: Letters, numbers, spaces, and common punctuation
+- **Restrictions**: No special characters that could cause file system issues
+- **Reserved names**: Cannot use system-reserved names
+
+### Descriptions
+- **Length**: 10-1000 characters
+- **Content**: Must be descriptive and specific
+- **Repetition**: Limited to prevent excessive word repetition
+- **Examples**: Physical features, clothing, distinctive characteristics
+
+### Negative Prompts
+- **Length**: 1-500 characters (optional)
+- **Purpose**: Describe what you DON'T want in the image
+- **Examples**: "blurry, low quality, cartoon style"
+
+### Reference Images
+- **Formats**: JPG, PNG, WebP
+- **Size**: Maximum 10MB
+- **Characters**: Maximum 2 people per image
+
+## Limitations
+
+- Characters are only stored in memory during the session
+- No persistent storage between sessions
+- Fixed aspect ratio (16:9) for all images
+- Single image generation per request
+- Requires active internet connection for API calls
+
+## Future Enhancements
+
+- Persistent character storage
+- Multiple aspect ratio support
+- Batch image generation
+- Web interface
+- Character template library
+- Advanced prompt management
+
+## Contributing
+
+This is a prototype application. Contributions are welcome for:
+- Bug fixes
+- Feature enhancements
+- Documentation improvements
+- Testing and validation
+
+## License
+
+[Add your license information here]
+
+## Support
+
+For issues and questions, please refer to the Google Cloud Vertex AI documentation or create an issue in this repository.
